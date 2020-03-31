@@ -1,5 +1,5 @@
 {
-  "name": "babel-transform-config",
+  "name": "@prismicio/babel-transform-config",
   "version": "0.0.5",
   "description": "Transform JS config files (Next, Nuxt, Gatsby)",
   "main": "index.js",

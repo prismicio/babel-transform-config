@@ -49,7 +49,7 @@ module.exports = function({ types: t }, transforms) {
 
   validateTransforms(transforms)
   Object.keys(transforms).forEach((key) => status[key] = false)
-  
+
 
   const expressionVisitor = {
     ObjectExpression(path, { isRoot, objectKeysPath, createKey, value }) {
@@ -98,13 +98,13 @@ module.exports = function({ types: t }, transforms) {
 
         const { type } = path.node.value
         const elemExists = testNodeValue(t, path);
-        
+
         (function handleWrite() {
           if ((!elemExists && operations.includes('create')) || operations.includes('replace')) {
             path.node.value = toAst(t, transform.value)
           }
 
-          if (operations.includes('merge')) {
+          else if (operations.includes('merge')) {
             const accessor = type === 'ArrayExpression' ? 'elements' : 'properties'
             const elems = [
               ...path.node.value[accessor],

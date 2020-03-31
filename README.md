@@ -4,7 +4,7 @@ If you ever wanted to update a Nuxt or Next config file programmatically.
 Simplest way to understand what it does:
 
 ````bash
-git clone https://github.com/hypervillain/babel-transform-config;
+git clone https://github.com/prismicio/babel-transform-config;
 cd babel-transform-config && npm install;
 node examples/nuxt.simple.js
 ````
