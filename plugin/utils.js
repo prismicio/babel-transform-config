@@ -33,8 +33,28 @@ function testNodeValue(t, path) {
   return true
 }
 
+const ArrayHelpers = {
+  splitAtLast(array) {
+    if(!array) return null;
+
+    switch(array.length) {
+      case 0: return [[], null];
+      case 1: return [[], array[0]];
+      default: return [array.slice(0, -1), array[array.length - 1]]
+    }
+  },
+
+  combine(array1, array2, mergeFn) {
+    const [main, other] = array1.length > array2.length ? [array2, array1] : [array1, array2];
+    return main
+    .map((value, index) => mergeFn(value, other[index]))
+    .concat(other.slice(main.length, other.length).map(value => mergeFn(undefined, value)))
+  }
+}
+
 module.exports = {
   buildSubjacentPaths,
   dedupeStringLiterals,
-  testNodeValue
+  testNodeValue,
+  ArrayHelpers
 }
