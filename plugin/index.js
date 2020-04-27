@@ -41,11 +41,20 @@ const nodeVisitor = {
       } else if(currentData.value && currentData.ops.includes(Operations.merge)) {
         if(path.node.value) {
           const { type } = path.node.value;
-          const accessor = type === 'ArrayExpression' ? 'elements' : 'properties';
-          path.replaceWithMultiple([
-            ...path.node.value[accessor],
-            ...toAst(globalTypes, currentData.value)[accessor]
-          ]);
+          switch(type) {
+            case 'ArrayExpression':
+              const elements = path.node.elements.concat(toAst(globalTypes, currentData.value).elements);
+              const updated = Object.assign({}, path.node, { elements });
+              path.replaceWithMultiple([
+                updated
+              ]);
+              break;
+
+            default:
+              const properties = path.node.properties.concat(toAst(globalTypes, currentData.value).properties);
+              const updated = Object.assign({}, path.node, { properties });
+              path.replaceWith(updated);
+          }
         } else {
           path.replaceWith(toAst(globalTypes, currentData.value));
         }
@@ -81,7 +90,7 @@ const nodeVisitor = {
 
       // keep exploring with a subset of the model based on the current visited node
       path.skip();
-      path.traverse(nodeVisitor, { nodeData: currentData, globalTypes })
+      path.traverse(nodeVisitor, { nodeData: currentData, globalTypes });
     }
   }
 }
@@ -98,7 +107,7 @@ module.exports = function({ types: globalTypes }, transforms) {
     name: 'babel-plugin-transform-config',
     visitor: {
       ExportDefaultDeclaration(path) {
-        path.traverse(nodeVisitor, { nodeData: data.root, globalTypes })
+        path.traverse(nodeVisitor, { nodeData: data.root, globalTypes });
       }
     }
   };
