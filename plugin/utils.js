@@ -1,15 +1,3 @@
-function dedupeStringLiterals(elements) {
-  const set = new Set()
-  return elements.filter(e => {
-    if (e.type !== 'StringLiteral') {
-      return true
-    }
-    const duplicate = set.has(e.value)
-    set.add(e.value)
-    return !duplicate
-  })
-}
-
 const ArrayHelpers = {
   splitAtLast(array) {
     if(!array) return null;
@@ -56,6 +44,5 @@ const ArrayHelpers = {
 }
 
 module.exports = {
-  dedupeStringLiterals,
   ArrayHelpers
 }
