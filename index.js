@@ -49,37 +49,31 @@ function createTransformArgs(framework, args, strict) {
   const frameworkTable = table[framework]
   const keysNotFound = []
   if (!frameworkTable) {
-    return consola.error(`[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`)
+    throw new Error(`[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`)
   }
-  try {
-    const transforms = Object.entries(args).reduce((acc, [k, v]) => {
-      if (frameworkTable[k]) {
-        const [key, value] = frameworkTable[k](v)
-        return {
-          ...acc,
-          [key]: value
+  const transforms = Object.entries(args).reduce((acc, [k, v]) => {
+    if (frameworkTable[k]) {
+      const [key, value] = frameworkTable[k](v)
+      return {
+        ...acc,
+        [key]: value
+      }
+    }
+    keysNotFound.push(k)
+    if (!strict) {
+      return {
+        ...acc,
+        [k]: {
+          action: "create:merge",
+          value: v
         }
       }
-      keysNotFound.push(k)
-      if (!strict) {
-        return {
-          ...acc,
-          [k]: {
-            action: "create:merge",
-            value: v
-          }
-        }
-      }
-      return acc
-    }, {})
-    return {
-      transforms,
-      keysNotFound
     }
-  } catch(e) {
-    return {
-      reason: e
-    }
+    return acc
+  }, {})
+  return {
+    transforms,
+    keysNotFound
   }
 }
 
@@ -100,19 +94,22 @@ function handleKeysNotFound(keys) {
   })
 }
 function transformConfig(code, framework, args, strict = true) {
-  const {
-    transforms,
-    keysNotFound,
-    reason,
-  } = createTransformArgs(framework, args, strict)
+  try {
+    const {
+      transforms,
+      keysNotFound,
+    } = createTransformArgs(framework, args, strict)
 
-  if (!transforms) {
-    return consola.error(reason)
+    if (!transforms) {
+      return consola.error(reason)
+    }
+    if (!strict && keysNotFound.length) {
+      handleKeysNotFound(keysNotFound);
+    }
+    return transform(code, transforms)
+  } catch(e) {
+    consola.error(e.message);
   }
-  if (!strict && keysNotFound.length) {
-    handleKeysNotFound(keysNotFound);
-  }
-  return transform(code, transforms)
 }
 
 transformConfig.transform = transform

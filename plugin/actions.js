@@ -1,13 +1,26 @@
 const Operations = require('./operations');
 const ArrayHelpers = require('./utils').ArrayHelpers;
+const treeModule = require('./tree');
+
+const Tree = treeModule.Tree;
+const Node = treeModule.Node;
+const Root = treeModule.Root;
+
+function _formatNode(key, value) {
+  return {
+    key,
+    value
+  };
+}
 
 function _format(key, value, ops) {
   const KeySeparator = ':';
-  const [nodes, leafKey] = ArrayHelpers.splitAtLast(key.split(KeySeparator))
+  const nodes = key.split(KeySeparator);
+
+  const [headList, last] = ArrayHelpers.splitAtLast(nodes);
+  const formattedNodes = headList.map(k => _formatNode(k, null)).concat([_formatNode(last, value)]);
   return {
-    nodes,
-    leaf: leafKey,
-    value: value,
+    nodes: formattedNodes,
     ops
   }
 }
@@ -25,5 +38,21 @@ module.exports = {
     const ops = Operations.toList(action, value);
 
     return _format(key, value, ops);
+  },
+
+  convertToTree(action) {
+
+    function toNodes(entries, ops) /* Node[] */ {
+      const [head, tail] = ArrayHelpers.splitAtHead(entries);
+      if(!head) return [];
+
+      return [new Node(head.key, head.value, toNodes(tail, ops), ops)];
+    }
+
+    const headNodes = toNodes(action.nodes, action.ops);
+
+    return new Tree(
+      new Root(headNodes)
+    );
   }
 }
