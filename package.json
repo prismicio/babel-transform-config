@@ -1,6 +1,6 @@
 {
   "name": "@prismicio/babel-transform-config",
-  "version": "0.0.5",
+  "version": "0.0.6-alpha.ea631c8",
   "description": "Transform JS config files (Next, Nuxt, Gatsby)",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,9 @@
     "Gatsby"
   ],
   "author": "Hugo Villain",
-  "contributors": ["Arnaud lewis (@arnaudlewis)"],
+  "contributors": [
+    "Arnaud lewis (@arnaudlewis)"
+  ],
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.8.7",
