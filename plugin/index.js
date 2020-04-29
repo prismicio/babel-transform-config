@@ -44,16 +44,16 @@ const nodeVisitor = {
           switch(type) {
             case 'ArrayExpression':
               const elements = path.node.elements.concat(toAst(globalTypes, currentData.value).elements);
-              const updated = Object.assign({}, path.node, { elements });
+              const updatedArray = Object.assign({}, path.node, { elements });
               path.replaceWithMultiple([
-                updated
+                updatedArray
               ]);
               break;
 
             default:
               const properties = path.node.properties.concat(toAst(globalTypes, currentData.value).properties);
-              const updated = Object.assign({}, path.node, { properties });
-              path.replaceWith(updated);
+              const updatedObj = Object.assign({}, path.node, { properties });
+              path.replaceWith(updatedObj);
           }
         } else {
           path.replaceWith(toAst(globalTypes, currentData.value));
