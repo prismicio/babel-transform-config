@@ -1,6 +1,6 @@
 {
   "name": "@prismicio/babel-transform-config",
-  "version": "0.0.6-alpha.ea631c8",
+  "version": "0.0.6-alpha.aead22d",
   "description": "Transform JS config files (Next, Nuxt, Gatsby)",
   "main": "index.js",
   "scripts": {
