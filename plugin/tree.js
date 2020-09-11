@@ -13,10 +13,11 @@ class Tree {
       else return otherNode;
     }));
 
-    const mergedKeys = mergedNodes.map(({ key }) => key);
+    const mergedKeys = mergedNodes.filter(n => n).map(({ key }) => key);
     const allNodes = this.root.nextNodes
     .filter(n => !mergedKeys.includes(n.keys))
-    .concat(mergedNodes);
+    .concat(mergedNodes)
+    .filter(n => n);
 
     return new Tree(new Root(allNodes));
   }
@@ -43,16 +44,23 @@ class Node extends _TreeNode {
   }
 
   combine(/* Node */other) /* Node[] */ {
-    if(this.key === node.key) {
+    // FIXME: This thing mess to hard at 
+    if(this.key === other.key) {
       const merged = (() => {
         const combinedOps = ArrayHelpers.distinct(this.ops, other.ops, (op1, op2) => op1 === op2);
         const finalValue = (() => {
-          if(combinedOps.includes(Operations.delete)) return null;
-          else {
-            if(this.value && other.value) {
-              if(Array.isArray(this.value)) return this.value.concat(other.value);
-              else return Object.assign({}, this.value, other.value);
-            } else return this.value || other.value;
+          if (combinedOps.includes(Operations.delete)) {
+            return null;
+          } else {
+            if (this.value && other.value) {
+              if (Array.isArray(this.value)) {
+                return this.value.concat(other.value)
+              } else {
+                return Object.assign({}, this.value, other.value);
+              }
+            } else {
+              return this.value || other.value;
+            }
           }
         })();
         new Node(

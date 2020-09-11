@@ -1,0 +1,328 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transformConfig.transform creates array 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: [\\"created\\"]
+};"
+`;
+
+exports[`transformConfig.transform creates array in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default'],
+    nested: [\\"created\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform creates multiple arrays 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: [\\"created\\"],
+  test2: [\\"created2\\"]
+};"
+`;
+
+exports[`transformConfig.transform creates multiple arrays in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default'],
+    nested: [\\"created\\"],
+    nested2: [\\"created2\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform creates nested array 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: {
+    nested: [\\"created\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform creates nested multiple arrays 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: {
+    nested: [\\"created\\"],
+    nested3: [\\"created2\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform creates/merges array 1`] = `
+Array [
+  "export default {
+  foo: ['default', \\"created/merged\\"],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};",
+  "export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: [\\"created/merged\\"]
+};",
+]
+`;
+
+exports[`transformConfig.transform creates/merges array in object 1`] = `
+Array [
+  "export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default', \\"created/merged\\"],
+    baz2: ['default']
+  }
+};",
+  "export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default'],
+    nested: [\\"created/merged\\"]
+  }
+};",
+]
+`;
+
+exports[`transformConfig.transform creates/merges nested array 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: {
+    nested: [\\"created/merged\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform creates/replaces array 1`] = `
+Array [
+  "export default {
+  foo: [\\"created/replaced\\"],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};",
+  "export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: [\\"created/replaced\\"]
+};",
+]
+`;
+
+exports[`transformConfig.transform creates/replaces array in object 1`] = `
+Array [
+  "export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: [\\"created/replaced\\"],
+    baz2: ['default']
+  }
+};",
+  "export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default'],
+    nested: [\\"created/replaced\\"]
+  }
+};",
+]
+`;
+
+exports[`transformConfig.transform creates/replaces nested array 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  },
+  test: {
+    nested: [\\"created/replaced\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform deletes array 1`] = `
+"export default {
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform deletes array in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform deletes multiple arrays 1`] = `
+"export default {
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform deletes multiple arrays in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {}
+};"
+`;
+
+exports[`transformConfig.transform deletes object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default']
+};"
+`;
+
+exports[`transformConfig.transform merges array 1`] = `
+"export default {
+  foo: ['default', \\"merged\\"],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform merges array in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default', \\"merged\\"],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform merges multiple arrays 1`] = `
+"export default {
+  foo: ['default', \\"merged\\"],
+  foo2: ['default', \\"merged2\\"],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform merges multiple arrays in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: ['default', \\"merged\\"],
+    baz2: ['default', \\"merged2\\"]
+  }
+};"
+`;
+
+exports[`transformConfig.transform replaces array 1`] = `
+"export default {
+  foo: [\\"replaced\\"],
+  foo2: ['default'],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform replaces array in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: [\\"replaced\\"],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform replaces multiple arrays 1`] = `
+"export default {
+  foo: [\\"replaced\\"],
+  foo2: [\\"replaced2\\"],
+  bar: {
+    baz: ['default'],
+    baz2: ['default']
+  }
+};"
+`;
+
+exports[`transformConfig.transform replaces multiple arrays in object 1`] = `
+"export default {
+  foo: ['default'],
+  foo2: ['default'],
+  bar: {
+    baz: [\\"replaced\\"],
+    baz2: [\\"replaced2\\"]
+  }
+};"
+`;

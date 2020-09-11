@@ -31,7 +31,7 @@ const ArrayHelpers = {
   },
 
   distinct(arr1, arr2, predicate) {
-    this.flatten(
+    return this.flatten(
       this.combine(arr1, arr2, (item1, item2) => predicate(item1, item2) ? [item1] : [item1, item2])
     );
   },
