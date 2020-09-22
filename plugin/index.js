@@ -88,8 +88,6 @@ const nodeVisitor = {
 
     const currentData = namedParent && parentData && parentData.nextNodes.find(n => n.key === namedParent);
 
-    // console.log(currentData);
-
     // update current node if needed
     if(currentData) {
       if (
@@ -109,8 +107,6 @@ const nodeVisitor = {
         } else if(
           currentData.ops.includes(Operations.replace) || currentData.ops.includes(Operations.create)
         ) {
-          // console.log(path.node);
-          // console.log("=".repeat(60));
           path.replaceWithMultiple([
             toAst(globalTypes, currentData.value)
           ]);

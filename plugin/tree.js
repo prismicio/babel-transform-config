@@ -15,9 +15,9 @@ class Tree {
 
     const mergedKeys = mergedNodes.filter(n => n).map(({ key }) => key);
     const allNodes = this.root.nextNodes
-    .filter(n => !mergedKeys.includes(n.keys))
-    .concat(mergedNodes)
-    .filter(n => n);
+      .filter(n => !mergedKeys.includes(n.key))
+      .concat(mergedNodes)
+      .filter(n => n);
 
     return new Tree(new Root(allNodes));
   }
@@ -44,7 +44,6 @@ class Node extends _TreeNode {
   }
 
   combine(/* Node */other) /* Node[] */ {
-    // FIXME: This thing mess to hard at 
     if(this.key === other.key) {
       const merged = (() => {
         const combinedOps = ArrayHelpers.distinct(this.ops, other.ops, (op1, op2) => op1 === op2);
@@ -63,13 +62,15 @@ class Node extends _TreeNode {
             }
           }
         })();
-        new Node(
+
+        return new Node(
           this.key,
           finalValue,
           ArrayHelpers.distinct(this.nextNodes, other.nextNodes, (node1, node2) => node1.key === node2.key),
           combinedOps
         )
       })();
+
       return [merged];
     } else {
       return [this, other];

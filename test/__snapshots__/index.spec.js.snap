@@ -45,7 +45,8 @@ exports[`transformConfig.transform creates multiple arrays in object 1`] = `
     baz: ['default'],
     baz2: ['default'],
     nested: [\\"created\\"],
-    nested2: [\\"created2\\"]
+    nested2: [\\"created2\\"],
+    nested3: [\\"created3\\"]
   }
 };"
 `;
@@ -74,7 +75,8 @@ exports[`transformConfig.transform creates nested multiple arrays 1`] = `
   },
   test: {
     nested: [\\"created\\"],
-    nested3: [\\"created2\\"]
+    nested2: [\\"created2\\"],
+    nested3: [\\"created3\\"]
   }
 };"
 `;

@@ -2,57 +2,36 @@
 const transformConfig = require('./');
 
 const config = `export default {
-  delete: ['value'],
-  modules: [],
-  css: ['value'],
-  head: {
-    script: [],
-    style: []
-  }
-};`
-
-const transforms = {
-  delete: {
-    action: 'delete'
-  },
-  modules: {
-    action: 'merge',
-    value: ['merge']
-  },
-  'buildModules': {
-    action: 'create',
-    value: ['create']
-  },
-  css: {
-    action: 'replace',
-    value: ['replace']
-  },
-  'head:script': {
-    action: 'merge',
-    value: ['merge']
-  },
-  // 'head:style': {
-  //   action: 'merge',
-  //   value: ['merge']
-  // }
-};
-
-// console.info(transformConfig.transform(config, transforms).code);
-
-const config2 = `export default {
   foo: ['default'],
+  foo2: ['default'],
   bar: {
-    baz: ['default']
+    baz: ['default'],
+    baz2: ['default']
   }
 };`;
-const transforms2 = {
-  'test:nested': {
+
+const transforms = {
+  'bar:test': {
     action: 'create',
     value: ['created']
   },
-  // 'bar:baz': {
-  //   action: 'merge',
-  //   value: ['merged']
-  // }
+  'bar:test2': {
+    action: 'create',
+    value: ['created']
+  },
+  'bar:baz': {
+    action: 'delete'
+  },
+  'bar:baz2': {
+    action: 'delete'
+  }
 };
-console.info(transformConfig.transform(config2, transforms2).code)
+
+console.info(transformConfig.transform(config, transforms).code)
+
+const { ArrayHelpers } = require('./plugin/utils');
+
+const ops1 = ['delete', 'create'];
+const ops2 = ['update'];
+
+console.log(ArrayHelpers.distinct(ops1, ops2, (op1, op2) => op1 === op2));

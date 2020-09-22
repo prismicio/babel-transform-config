@@ -56,6 +56,10 @@ describe('transformConfig.transform', () => {
       'bar:nested2': {
         action: 'create',
         value: ['created2']
+      },
+      'bar:nested3': {
+        action: 'create',
+        value: ['created3']
       }
     };
     const transformed = transformConfig.transform(config, transforms);
@@ -80,6 +84,10 @@ describe('transformConfig.transform', () => {
       'test:nested2': {
         action: 'create',
         value: ['created2']
+      },
+      'test:nested3': {
+        action: 'create',
+        value: ['created3']
       }
     };
     const transformed = transformConfig.transform(config, transforms);
