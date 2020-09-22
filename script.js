@@ -27,11 +27,23 @@ const transforms = {
   }
 };
 
-console.info(transformConfig.transform(config, transforms).code)
+// console.info(transformConfig.transform(config, transforms).code)
 
 const { ArrayHelpers } = require('./plugin/utils');
 
 const ops1 = ['delete', 'create'];
 const ops2 = ['update'];
 
-console.log(ArrayHelpers.distinct(ops1, ops2, (op1, op2) => op1 === op2));
+// console.log(ArrayHelpers.distinct(ops1, ops2, (op1, op2) => op1 === op2));
+
+const config2 = `export default {
+  config: {},
+  buildModules: [{}]
+};
+`
+
+const transforms2 = {
+  ignore: { action: 'create:merge', value: [ '**/*.stories.js' ] }
+}
+
+console.info(transformConfig.transform(config2, transforms2).code)

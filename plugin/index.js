@@ -63,23 +63,24 @@ const nodeVisitor = {
       // keep exploring with a subset of the model based on the current visited node
       path.skip();
       path.traverse(nodeVisitor, { nodeData: currentData, globalTypes });
-    } else if (!namedParent) {
-
-      // THINK: This is quite a hack to create missing nodes and then get through the tree again
+    } else if (!namedParent && path.parent.type === 'ExportDefaultDeclaration') {
+      // Create missing nodes when at root
       const childrenKeys = path.node.properties.map(node => node.key.name);
-      const missingKeys = ArrayHelpers.diff(parentData.nextNodes.map(n => n.key), childrenKeys);
+      const missingNodes = parentData.nextNodes.filter(node => childrenKeys.indexOf(node.key) === -1);
 
-      missingKeys.forEach(key => {
-        const newObjectProperty = globalTypes.ObjectProperty(
-          globalTypes.identifier(key),
-          toAst(globalTypes, {})
-        );
+      if (missingNodes) {
+        missingNodes.forEach(nodeData => {
+          const newObjectProperty = globalTypes.ObjectProperty(
+            globalTypes.identifier(nodeData.key),
+            toAst(globalTypes, {})
+          );
 
-        path.node.properties = [
-          ...path.node.properties,
-          newObjectProperty
-        ];
-      });
+          path.node.properties = [
+            ...path.node.properties,
+            newObjectProperty
+          ];
+        });
+      }
     }
   },
   ArrayExpression(path, state) {

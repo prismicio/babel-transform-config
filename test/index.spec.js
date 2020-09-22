@@ -7,7 +7,8 @@ describe('transformConfig.transform', () => {
     bar: {
       baz: ['default'],
       baz2: ['default']
-    }
+    },
+    qux: [{}]
   };`;
 
   /**

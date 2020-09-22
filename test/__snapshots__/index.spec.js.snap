@@ -8,6 +8,7 @@ exports[`transformConfig.transform creates array 1`] = `
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: [\\"created\\"]
 };"
 `;
@@ -20,7 +21,8 @@ exports[`transformConfig.transform creates array in object 1`] = `
     baz: ['default'],
     baz2: ['default'],
     nested: [\\"created\\"]
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -32,6 +34,7 @@ exports[`transformConfig.transform creates multiple arrays 1`] = `
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: [\\"created\\"],
   test2: [\\"created2\\"]
 };"
@@ -47,7 +50,8 @@ exports[`transformConfig.transform creates multiple arrays in object 1`] = `
     nested: [\\"created\\"],
     nested2: [\\"created2\\"],
     nested3: [\\"created3\\"]
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -59,6 +63,7 @@ exports[`transformConfig.transform creates nested array 1`] = `
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: {
     nested: [\\"created\\"]
   }
@@ -73,6 +78,7 @@ exports[`transformConfig.transform creates nested multiple arrays 1`] = `
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: {
     nested: [\\"created\\"],
     nested2: [\\"created2\\"],
@@ -89,7 +95,8 @@ Array [
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };",
   "export default {
   foo: ['default'],
@@ -98,6 +105,7 @@ Array [
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: [\\"created/merged\\"]
 };",
 ]
@@ -111,7 +119,8 @@ Array [
   bar: {
     baz: ['default', \\"created/merged\\"],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };",
   "export default {
   foo: ['default'],
@@ -120,7 +129,8 @@ Array [
     baz: ['default'],
     baz2: ['default'],
     nested: [\\"created/merged\\"]
-  }
+  },
+  qux: [{}]
 };",
 ]
 `;
@@ -133,6 +143,7 @@ exports[`transformConfig.transform creates/merges nested array 1`] = `
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: {
     nested: [\\"created/merged\\"]
   }
@@ -147,7 +158,8 @@ Array [
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };",
   "export default {
   foo: ['default'],
@@ -156,6 +168,7 @@ Array [
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: [\\"created/replaced\\"]
 };",
 ]
@@ -169,7 +182,8 @@ Array [
   bar: {
     baz: [\\"created/replaced\\"],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };",
   "export default {
   foo: ['default'],
@@ -178,7 +192,8 @@ Array [
     baz: ['default'],
     baz2: ['default'],
     nested: [\\"created/replaced\\"]
-  }
+  },
+  qux: [{}]
 };",
 ]
 `;
@@ -191,6 +206,7 @@ exports[`transformConfig.transform creates/replaces nested array 1`] = `
     baz: ['default'],
     baz2: ['default']
   },
+  qux: [{}],
   test: {
     nested: [\\"created/replaced\\"]
   }
@@ -203,7 +219,8 @@ exports[`transformConfig.transform deletes array 1`] = `
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -213,7 +230,8 @@ exports[`transformConfig.transform deletes array in object 1`] = `
   foo2: ['default'],
   bar: {
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -222,7 +240,8 @@ exports[`transformConfig.transform deletes multiple arrays 1`] = `
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -230,14 +249,16 @@ exports[`transformConfig.transform deletes multiple arrays in object 1`] = `
 "export default {
   foo: ['default'],
   foo2: ['default'],
-  bar: {}
+  bar: {},
+  qux: [{}]
 };"
 `;
 
 exports[`transformConfig.transform deletes object 1`] = `
 "export default {
   foo: ['default'],
-  foo2: ['default']
+  foo2: ['default'],
+  qux: [{}]
 };"
 `;
 
@@ -248,7 +269,8 @@ exports[`transformConfig.transform merges array 1`] = `
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -259,7 +281,8 @@ exports[`transformConfig.transform merges array in object 1`] = `
   bar: {
     baz: ['default', \\"merged\\"],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -270,7 +293,8 @@ exports[`transformConfig.transform merges multiple arrays 1`] = `
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -281,7 +305,8 @@ exports[`transformConfig.transform merges multiple arrays in object 1`] = `
   bar: {
     baz: ['default', \\"merged\\"],
     baz2: ['default', \\"merged2\\"]
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -292,7 +317,8 @@ exports[`transformConfig.transform replaces array 1`] = `
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -303,7 +329,8 @@ exports[`transformConfig.transform replaces array in object 1`] = `
   bar: {
     baz: [\\"replaced\\"],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -314,7 +341,8 @@ exports[`transformConfig.transform replaces multiple arrays 1`] = `
   bar: {
     baz: ['default'],
     baz2: ['default']
-  }
+  },
+  qux: [{}]
 };"
 `;
 
@@ -325,6 +353,7 @@ exports[`transformConfig.transform replaces multiple arrays in object 1`] = `
   bar: {
     baz: [\\"replaced\\"],
     baz2: [\\"replaced2\\"]
-  }
+  },
+  qux: [{}]
 };"
 `;
