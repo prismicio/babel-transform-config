@@ -100,8 +100,8 @@ function transformConfig(code, framework, args, strict = true) {
       keysNotFound,
     } = createTransformArgs(framework, args, strict)
 
-    if (!transforms) {
-      return consola.error(reason)
+    if (JSON.stringify(transforms) === "{}") {
+      return consola.error("No transforms performed")
     }
     if (!strict && keysNotFound.length) {
       handleKeysNotFound(keysNotFound);
