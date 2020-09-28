@@ -20,10 +20,12 @@ const ArrayHelpers = {
   },
 
   combine(array1, array2, mergeFn) {
+    // FIXME: Behaving really weirdly / not used
     const [main, other] = array1.length > array2.length ? [array2, array1] : [array1, array2];
+
     return main
-    .map((value, index) => mergeFn(value, other[index]))
-    .concat(other.slice(main.length, other.length).map(value => mergeFn(undefined, value)))
+      .map((value, index) => mergeFn(value, other[index]))
+      .concat(other.slice(main.length, other.length).map(value => mergeFn(undefined, value)))
   },
 
   flatten(arr) {
@@ -31,9 +33,15 @@ const ArrayHelpers = {
   },
 
   distinct(arr1, arr2, predicate) {
-    this.flatten(
-      this.combine(arr1, arr2, (item1, item2) => predicate(item1, item2) ? [item1] : [item1, item2])
-    );
+    return arr1.concat(arr2).reduce((acc, current) => {
+      for (const item of acc) {
+        if (predicate(item, current)) {
+          return acc;
+        }
+      }
+      acc.push(current);
+      return acc;
+    }, []);
   },
 
   diff(array1, array2) {

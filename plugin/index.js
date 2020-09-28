@@ -22,22 +22,20 @@ const nodeVisitor = {
       // detect and create missing nodes
       const childrenKeys = path.node.properties.map(node => node.key.name);
       const missingKeys = ArrayHelpers.diff(currentData.nextNodes.map(n => n.key), childrenKeys);
-      if(missingKeys.length) {
-        missingKeys.forEach(key => {
-          const newObjectProperty = globalTypes.ObjectProperty(
-            globalTypes.identifier(key),
-            toAst(globalTypes, {})
-          );
+      missingKeys.forEach(key => {
+        const newObjectProperty = globalTypes.ObjectProperty(
+          globalTypes.identifier(key),
+          toAst(globalTypes, {})
+        );
 
-          path.node.properties = [
-            ...path.node.properties,
-            newObjectProperty
-          ];
-        });
-      }
+        path.node.properties = [
+          ...path.node.properties,
+          newObjectProperty
+        ];
+      });
       // update current node if needed
-      if(currentData.ops.includes(Operations.delete && !currentData.value) && !currentData.nextNodes.length) {
-        path.remove();
+      if(currentData.ops.includes(Operations.delete) && !currentData.value && !currentData.nextNodes.length) {
+        path.parentPath.remove();
       } else if(currentData.value && currentData.ops.includes(Operations.merge)) {
         if(path.node.value) {
           const { type } = path.node.value;
@@ -64,7 +62,25 @@ const nodeVisitor = {
 
       // keep exploring with a subset of the model based on the current visited node
       path.skip();
-      path.traverse(nodeVisitor, { nodeData: currentData, globalTypes })
+      path.traverse(nodeVisitor, { nodeData: currentData, globalTypes });
+    } else if (!namedParent && path.parent.type === 'ExportDefaultDeclaration') {
+      // Create missing nodes when at root
+      const childrenKeys = path.node.properties.map(node => node.key.name);
+      const missingNodes = parentData.nextNodes.filter(node => childrenKeys.indexOf(node.key) === -1);
+
+      if (missingNodes) {
+        missingNodes.forEach(nodeData => {
+          const newObjectProperty = globalTypes.ObjectProperty(
+            globalTypes.identifier(nodeData.key),
+            toAst(globalTypes, {})
+          );
+
+          path.node.properties = [
+            ...path.node.properties,
+            newObjectProperty
+          ];
+        });
+      }
     }
   },
   ArrayExpression(path, state) {
@@ -72,20 +88,30 @@ const nodeVisitor = {
     const namedParent = path.parent.key && path.parent.key.name;
 
     const currentData = namedParent && parentData && parentData.nextNodes.find(n => n.key === namedParent);
+
     // update current node if needed
     if(currentData) {
-      if(currentData.ops.includes(Operations.delete && !currentData.value) && !currentData.nextNodes.length) {
-        path.remove();
-      } else if(currentData.value && currentData.ops.includes(Operations.merge)) {
-        const elements = path.node.elements.concat(toAst(globalTypes, currentData.value).elements);
-        const updated = Object.assign({}, path.node, { elements });
-        path.replaceWithMultiple([
-          updated
-        ]);
-      } else if(currentData.value && (currentData.ops.includes(Operations.replace) || currentData.ops.includes(Operations.create))) {
-        path.replaceWithMultiple([
-          toAst(globalTypes, currentData.value)
-        ]);
+      if (
+        currentData.ops.includes(Operations.delete)
+        && !currentData.value
+        && !currentData.nextNodes.length
+      ) {
+        path.parentPath.remove();
+        return;
+      } else if (currentData.value) {
+        if (currentData.ops.includes(Operations.merge)) {
+          const elements = path.node.elements.concat(toAst(globalTypes, currentData.value).elements);
+          const updated = Object.assign({}, path.node, { elements });
+          path.replaceWithMultiple([
+            updated
+          ]);
+        } else if(
+          currentData.ops.includes(Operations.replace) || currentData.ops.includes(Operations.create)
+        ) {
+          path.replaceWithMultiple([
+            toAst(globalTypes, currentData.value)
+          ]);
+        }
       }
 
       // keep exploring with a subset of the model based on the current visited node
