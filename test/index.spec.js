@@ -1,4 +1,5 @@
 const transformConfig = require('../');
+const consola = require('consola');
 
 describe('transformConfig.transform', () => {
   const config = `export default {
@@ -354,3 +355,40 @@ describe('transformConfig.transform', () => {
     expect(transformed.code).toMatchSnapshot();
   });
 });
+
+describe("transformConfig", () => {
+  it('should call consola.error when no transforms are made', () => {
+    consola.mockTypes((typeName) => typeName === 'error' && jest.fn());
+
+    const result = transformConfig("", "nuxt", {})
+
+    expect(consola.error).toBeCalledWith("No transforms performed");
+
+  });
+
+  it('should call consola.error when no transforms are made', () => {
+    consola.mockTypes((typeName) => typeName === 'error' && jest.fn());
+    const framework = "foo";
+    const message = `[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`
+
+
+    const result = transformConfig("", framework, {})
+
+
+    expect(consola.error).toBeCalledWith(message);
+
+  })
+
+  it('should call consola.error when no transforms are made', () => {
+    consola.mockTypes((typeName) => typeName === 'error' && jest.fn());
+    const framework = "__proto__";
+    const message = `[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`
+
+
+    const result = transformConfig("", framework, {})
+
+
+    expect(consola.error).toBeCalledWith(message);
+
+  })
+})
