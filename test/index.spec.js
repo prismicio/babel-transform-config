@@ -1,6 +1,32 @@
 const transformConfig = require('../');
 const consola = require('consola');
 
+describe('transformConfig', () => {
+  it('should call consola.error when no transforms are made', () => {
+    consola.mockTypes(typeName => typeName === 'error' && jest.fn());
+
+    transformConfig('', 'nuxt', {});
+
+    expect(consola.error).toBeCalledWith('No transforms performed');
+  });
+
+  it('should call consola.error when framework is not supported', () => {
+    consola.mockTypes(typeName => typeName === 'error' && jest.fn());
+
+    let framework = 'foo';
+    transformConfig('', framework, {});
+    expect(consola.error).toBeCalledWith(
+      `[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`
+    );
+
+    framework = '__proto__';
+    transformConfig('', framework, {});
+    expect(consola.error).toBeCalledWith(
+      `[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`
+    );
+  });
+});
+
 describe('transformConfig.transform', () => {
   const config = `export default {
     foo: ['default'],
@@ -273,7 +299,9 @@ describe('transformConfig.transform', () => {
         }
       }
     ];
-    const transformed = transformsArray.map(transforms => transformConfig.transform(config, transforms));
+    const transformed = transformsArray.map(transforms =>
+      transformConfig.transform(config, transforms)
+    );
     expect(transformed.map(t => t.code)).toMatchSnapshot();
   });
   it('creates/replaces array in object', () => {
@@ -291,7 +319,9 @@ describe('transformConfig.transform', () => {
         }
       }
     ];
-    const transformed = transformsArray.map(transforms => transformConfig.transform(config, transforms));
+    const transformed = transformsArray.map(transforms =>
+      transformConfig.transform(config, transforms)
+    );
     expect(transformed.map(t => t.code)).toMatchSnapshot();
   });
   it('creates/replaces nested array', () => {
@@ -323,7 +353,9 @@ describe('transformConfig.transform', () => {
         }
       }
     ];
-    const transformed = transformsArray.map(transforms => transformConfig.transform(config, transforms));
+    const transformed = transformsArray.map(transforms =>
+      transformConfig.transform(config, transforms)
+    );
     expect(transformed.map(t => t.code)).toMatchSnapshot();
   });
   it('creates/merges array in object', () => {
@@ -341,7 +373,9 @@ describe('transformConfig.transform', () => {
         }
       }
     ];
-    const transformed = transformsArray.map(transforms => transformConfig.transform(config, transforms));
+    const transformed = transformsArray.map(transforms =>
+      transformConfig.transform(config, transforms)
+    );
     expect(transformed.map(t => t.code)).toMatchSnapshot();
   });
   it('creates/merges nested array', () => {
@@ -355,40 +389,3 @@ describe('transformConfig.transform', () => {
     expect(transformed.code).toMatchSnapshot();
   });
 });
-
-describe("transformConfig", () => {
-  it('should call consola.error when no transforms are made', () => {
-    consola.mockTypes((typeName) => typeName === 'error' && jest.fn());
-
-    const result = transformConfig("", "nuxt", {})
-
-    expect(consola.error).toBeCalledWith("No transforms performed");
-
-  });
-
-  it('should call consola.error when no transforms are made', () => {
-    consola.mockTypes((typeName) => typeName === 'error' && jest.fn());
-    const framework = "foo";
-    const message = `[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`
-
-
-    const result = transformConfig("", framework, {})
-
-
-    expect(consola.error).toBeCalledWith(message);
-
-  })
-
-  it('should call consola.error when no transforms are made', () => {
-    consola.mockTypes((typeName) => typeName === 'error' && jest.fn());
-    const framework = "__proto__";
-    const message = `[transform-configs] ${framework} Framework not supported\nUse babel plugin directly instead`
-
-
-    const result = transformConfig("", framework, {})
-
-
-    expect(consola.error).toBeCalledWith(message);
-
-  })
-})
