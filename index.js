@@ -60,8 +60,8 @@ const nuxt = {
       }
     ];
   }
-}
-const table = Object.create(null, { nuxt });
+};
+const table = { nuxt };
 
 function createTransformArgs(framework, args, strict) {
   if (!table.hasOwnProperty(framework)) {
