@@ -3,7 +3,7 @@ const path = require('path');
 const transformCode = require('../').transform;
 
 const code = fs.readFileSync(
-  path.join(process.cwd(), 'examples/configs/nuxt.trans.js'),
+  path.join(__dirname, 'configs', 'nuxt.trans.js'),
   'utf8'
 );
 
@@ -12,6 +12,10 @@ const transforms = {
     // create or replace export default { head: { script: [] }}
     action: 'create:replace',
     value: ['my/script.js']
+  },
+  'delete:deleteMeMaybe': {
+    // delete export default { deleteMe: ... }
+    action: 'delete'
   },
   deleteMeMaybe: {
     // delete export default { deleteMe: ... }

@@ -3,7 +3,7 @@ const path = require('path');
 const transformConfig = require('../');
 
 const code = fs.readFileSync(
-  path.join(process.cwd(), 'examples/configs/nuxt.simple.js'),
+  path.join(__dirname, 'configs', 'nuxt.simple.js'),
   'utf8'
 );
 

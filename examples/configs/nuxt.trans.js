@@ -8,5 +8,8 @@ export default {
   build: {
     extend(config, ctx) {}
   },
-  deleteMeMaybe: true
+  delete: {
+    deleteMeMaybe: [true]
+  },
+  deleteMeMaybe: [true]
 };
