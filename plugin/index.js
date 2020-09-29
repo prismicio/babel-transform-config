@@ -1,164 +1,160 @@
-const consola = require('consola')
-const toAst = require('./toAst')
-
-const {
-  dedupeStringLiterals,
-  testNodeValue,
-  buildSubjacentPaths
-} = require('./utils')
-
-const OPERATIONS = ['create', 'merge', 'replace', 'delete']
-
-function mergePaths(parentKeys, nodeName) {
-  return `${parentKeys}${parentKeys.length ? ':' : ''}${nodeName}`
-}
-
-function validateAction(transform) {
-  const operations = transform.action.split(':')
-
-  operations.forEach((operation) => {
-    if (!OPERATIONS.includes(operation)) {
-      throw new Error(`Operation "${operation}" does not exist.\nDefined operations: ${OPERATIONS}`)
-    }
-  })
-  if (operations.includes('merge') && operations.includes('replace')) {
-    throw new Error('Operations "merge" and "update" cannot coexist in transform\'s "action" property')
-  }
-  if (operations.includes('create') && operations.includes('delete')) {
-    throw new Error('Operations "create" and "delete" cannot coexist in transform\'s "action" property')
-  }
-  if (operations.includes('merge') && !Array.isArray(transform.value)) {
-    throw new Error('Operations "merge" expects value to be of type "Array" (tested with Array.isArray)')
-  }
-}
+const consola = require('consola');
+const Actions = require('./actions');
+const Trees = require('./tree').Trees;
+const ArrayHelpers = require('./utils').ArrayHelpers;
+const toAst = require('./toAst');
+const Operations = require('./operations');
 
 function validateTransforms(transforms) {
-  Object.entries(transforms).forEach(([key, transform]) => {
-    if (!transform.action || !transform.action.length) {
-      throw new Error(`Transformation with key "${key}" should possess a non-empty "action" key`)
-    }
-    if (transform.action.indexOf('delete') === -1 && transform.value === undefined) {
-      throw new Error(`Transformation with key "${key}" should possess a non-empty "value" key`)
-    }
-    validateAction(transform)
-  })
+  return Object.entries(transforms).map(([key, transform]) => {
+    return Actions.validate(key, transform.action, transform.value);
+  });
 }
 
-module.exports = function({ types: t }, transforms) {
-  const status = {}
+const nodeVisitor = {
+  ObjectExpression(path, state) {
+    const { nodeData: parentData, globalTypes } = state;
+    const namedParent = path.parent.key && path.parent.key.name;
 
-  validateTransforms(transforms)
-  Object.keys(transforms).forEach((key) => status[key] = false)
+    const currentData =
+      namedParent &&
+      parentData &&
+      parentData.nextNodes.find(n => n.key === namedParent);
 
+    if (currentData) {
+      // detect and create missing nodes
+      const childrenKeys = path.node.properties.map(node => node.key.name);
+      const missingKeys = ArrayHelpers.diff(
+        currentData.nextNodes.map(n => n.key),
+        childrenKeys
+      );
+      missingKeys.forEach(key => {
+        const newObjectProperty = globalTypes.ObjectProperty(
+          globalTypes.identifier(key),
+          toAst(globalTypes, {})
+        );
 
-  const expressionVisitor = {
-    ObjectExpression(path, { isRoot, objectKeysPath, createKey, value }) {
+        path.node.properties = [...path.node.properties, newObjectProperty];
+      });
+      // update current node if needed
+      if (
+        currentData.ops.includes(Operations.delete) &&
+        !currentData.value &&
+        !currentData.nextNodes.length
+      ) {
+        path.parentPath.remove();
+      } else if (
+        currentData.value &&
+        currentData.ops.includes(Operations.merge)
+      ) {
+        if (path.node.value) {
+          const { type } = path.node.value;
+          switch (type) {
+            case 'ArrayExpression':
+              const elements = path.node.elements.concat(
+                toAst(globalTypes, currentData.value).elements
+              );
+              const updatedArray = Object.assign({}, path.node, { elements });
+              path.replaceWithMultiple([updatedArray]);
+              break;
 
-      const fullPathToBuild = mergePaths(objectKeysPath, createKey)
-      const currentParentKey = path.parent.key ? path.parent.key.name : ''
+            default:
+              const properties = path.node.properties.concat(
+                toAst(globalTypes, currentData.value).properties
+              );
+              const updatedObj = Object.assign({}, path.node, { properties });
+              path.replaceWith(updatedObj);
+          }
+        } else {
+          path.replaceWith(toAst(globalTypes, currentData.value));
+        }
+      } else if (
+        currentData.value &&
+        (currentData.ops.includes(Operations.replace) ||
+          currentData.ops.includes(Operations.create))
+      ) {
+        path.replaceWith(toAst(globalTypes, currentData.value));
+      }
 
-      const currentPathToBuild = mergePaths(currentParentKey, createKey)
+      // keep exploring with a subset of the model based on the current visited node
+      path.skip();
+      path.traverse(nodeVisitor, { nodeData: currentData, globalTypes });
+    } else if (
+      !namedParent &&
+      path.parent.type === 'ExportDefaultDeclaration'
+    ) {
+      // Create missing nodes when at root
+      const childrenKeys = path.node.properties.map(node => node.key.name);
+      const missingNodes = parentData.nextNodes.filter(
+        node => childrenKeys.indexOf(node.key) === -1
+      );
 
-      if (currentPathToBuild === fullPathToBuild) {
-        if (
-          path.parent.declaration
-          && path.parent.declaration.properties
-          && path.parent.declaration.properties.find(e => e.key.name === createKey)
+      if (missingNodes) {
+        missingNodes.forEach(nodeData => {
+          const newObjectProperty = globalTypes.ObjectProperty(
+            globalTypes.identifier(nodeData.key),
+            toAst(globalTypes, {})
+          );
+
+          path.node.properties = [...path.node.properties, newObjectProperty];
+        });
+      }
+    }
+  },
+  ArrayExpression(path, state) {
+    const { nodeData: parentData, globalTypes } = state;
+    const namedParent = path.parent.key && path.parent.key.name;
+
+    const currentData =
+      namedParent &&
+      parentData &&
+      parentData.nextNodes.find(n => n.key === namedParent);
+
+    // update current node if needed
+    if (currentData) {
+      if (
+        currentData.ops.includes(Operations.delete) &&
+        !currentData.value &&
+        !currentData.nextNodes.length
+      ) {
+        path.parentPath.remove();
+        return;
+      } else if (currentData.value) {
+        if (currentData.ops.includes(Operations.merge)) {
+          const elements = path.node.elements.concat(
+            toAst(globalTypes, currentData.value).elements
+          );
+          const updated = Object.assign({}, path.node, { elements });
+          path.replaceWithMultiple([updated]);
+        } else if (
+          currentData.ops.includes(Operations.replace) ||
+          currentData.ops.includes(Operations.create)
         ) {
-          return
+          path.replaceWithMultiple([toAst(globalTypes, currentData.value)]);
         }
-
-        // Make sure you create root key
-        // at exportDefault level to prevent writing value evrywhere
-        if (isRoot && (!path.parentPath.node.key || path.parentPath.node.key.loc)) {
-          return
-        }
-        const newObjectProperty = t.ObjectProperty(
-          t.identifier(createKey),
-          toAst(t, value)
-        )
-        path.node.properties = [
-          ...path.node.properties,
-          newObjectProperty
-        ]
       }
+
+      // keep exploring with a subset of the model based on the current visited node
+      path.skip();
+      path.traverse(nodeVisitor, { nodeData: currentData, globalTypes });
     }
   }
-  const objectPropVisitor = {
-    ObjectProperty(path, { parentKeys = '' } =  {}) {
-      const currentPath = mergePaths(parentKeys, path.node.key.name)
-      const transform = transforms[currentPath]
+};
 
-      if (transform && !status[currentPath]) {
-        status[currentPath] = true
-        const operations = transform.action.split(':')
-        if (operations.includes('delete')) {
-          return path.remove()
-        }
-
-        const { type } = path.node.value
-        const elemExists = testNodeValue(t, path);
-
-        (function handleWrite() {
-          if ((!elemExists && operations.includes('create')) || operations.includes('replace')) {
-            path.node.value = toAst(t, transform.value)
-          }
-
-          else if (operations.includes('merge')) {
-            const accessor = type === 'ArrayExpression' ? 'elements' : 'properties'
-            const elems = [
-              ...path.node.value[accessor],
-              ...toAst(t, transform.value)[accessor]
-            ];
-            path.node.value[accessor] = dedupeStringLiterals(elems)
-          }
-        })();
-      }
-
-      if (path.node.value && (path.node.value.properties || path.node.value.elements)) {
-        return path.traverse(objectPropVisitor, {
-          parentKeys: currentPath
-        })
-      }
-    }
-  }
+module.exports = function ({ types: globalTypes }, transforms) {
+  const validActions = validateTransforms(transforms);
+  const data = validActions
+    .map(Actions.convertToTree)
+    .reduce((accTree, actionTree) => {
+      return accTree.combine(actionTree);
+    }, Trees.empty());
 
   return {
     name: 'babel-plugin-transform-config',
     visitor: {
-      Program(path) {
-        const exportPath = path.get('body')
-          .find((path) => path.isExportDefaultDeclaration()
-            && path.node.declaration
-            && path.node.declaration.type === 'ObjectExpression'
-          )
-
-        if (!exportPath) {
-          return consola.error('Could not find default exported object. Maybe your config file returns a function?')
-        }
-        exportPath.traverse(objectPropVisitor)
-
-        Object.entries(status).forEach(([key, value]) => {
-          if (value === false && transforms[key].action.indexOf('create') !== -1) {
-            const subPaths = key.split(':')
-            const subPathsToCreate = buildSubjacentPaths(subPaths).slice(0, -1);
-
-            subPathsToCreate.forEach((p, i) => {
-              exportPath.traverse(expressionVisitor, {
-                objectKeysPath: p.slice(0, -1).join(':'),
-                createKey: p.pop(),
-                value: {},
-                isRoot: i === 0
-              })
-            })
-            exportPath.traverse(expressionVisitor, {
-              objectKeysPath: key.split(':').slice(0, -1).join(':'),
-              createKey: key.split(':').pop(),
-              value: transforms[key].value
-            })
-          }
-        }, [])
-      },
+      ExportDefaultDeclaration(path) {
+        path.traverse(nodeVisitor, { nodeData: data.root, globalTypes });
+      }
     }
-  }
+  };
 };

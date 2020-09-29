@@ -1,20 +1,21 @@
-const fs = require('fs')
-const path = require('path')
-const transformConfig = require('../')
+const fs = require('fs');
+const path = require('path');
+const transformConfig = require('../');
 
-const code = fs.readFileSync(path.join(process.cwd(), 'examples/configs/nuxt.simple.js'), 'utf8')
+const code = fs.readFileSync(
+  path.join(__dirname, 'configs', 'nuxt.simple.js'),
+  'utf8'
+);
 
 const args = {
   css: ['path/to/file'],
-  modules: [
-    ['my-module', { config: true }]
-  ],
+  modules: [['my-module', { config: true }]],
   transpile: ['my-other-module']
-}
+};
 
-const { code: updated } = transformConfig(code, 'nuxt', args)
+const { code: updated } = transformConfig(code, 'nuxt', args);
 
-console.log('previous code:\n', code)
+console.log('previous code:\n', code);
 
-console.log('passed args: ', JSON.stringify(args), '\n')
-console.log('new code:\n', updated)
+console.log('passed args: ', JSON.stringify(args), '\n');
+console.log('new code:\n', updated);

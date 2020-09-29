@@ -1,10 +1,12 @@
 {
   "name": "@prismicio/babel-transform-config",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Transform JS config files (Next, Nuxt, Gatsby)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --ext .js,.ts .",
+    "jest": "jest",
+    "test": "yarn lint && yarn jest"
   },
   "keywords": [
     "Babel",
@@ -15,16 +17,36 @@
     "Gatsby"
   ],
   "author": "Hugo Villain",
+  "contributors": [
+    "Arnaud lewis (@arnaudlewis)"
+  ],
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/plugin-syntax-jsx": "^7.8.3",
-    "@babel/plugin-transform-arrow-functions": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",
-    "@babel/standalone": "^7.8.8",
-    "@babel/template": "^7.8.6",
-    "@babel/traverse": "^7.8.6",
-    "consola": "^2.11.3"
-  }
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-syntax-jsx": "^7.10.4",
+    "@babel/plugin-transform-arrow-functions": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/standalone": "^7.11.6",
+    "@babel/template": "^7.10.4",
+    "@babel/traverse": "^7.11.5",
+    "consola": "^2.15.0"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prismicio/babel-transform-config.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prismicio/babel-transform-config/issues"
+  },
+  "homepage": "https://github.com/prismicio/babel-transform-config#readme"
 }
