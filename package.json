@@ -4,7 +4,9 @@
   "description": "Transform JS config files (Next, Nuxt, Gatsby)",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "lint": "eslint --ext .js,.ts .",
+    "jest": "jest",
+    "test": "yarn lint && yarn jest"
   },
   "keywords": [
     "Babel",
@@ -31,7 +33,13 @@
     "consola": "^2.11.3"
   },
   "devDependencies": {
-    "jest": "26.4.2"
+    "jest": "^26.4.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
   },
   "repository": {
     "type": "git",

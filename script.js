@@ -40,10 +40,10 @@ const config2 = `export default {
   config: {},
   buildModules: [{}]
 };
-`
+`;
 
 const transforms2 = {
-  ignore: { action: 'create:merge', value: [ '**/*.stories.js' ] }
-}
+  ignore: { action: 'create:merge', value: ['**/*.stories.js'] }
+};
 
-console.info(transformConfig.transform(config2, transforms2).code)
+console.info(transformConfig.transform(config2, transforms2).code);

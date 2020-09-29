@@ -1,5 +1,5 @@
 export default {
-  mode: "universal",
+  mode: 'universal',
   css: [],
   modules: ['@org/my-nuxt-module'],
   build: {
